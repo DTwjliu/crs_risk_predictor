@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.conda/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Raw data
+data/
+database/
+*.parquet
+*.xlsx
+*.xls
+
+# Raw patient-level files
+*mimiciv_datasheet*
+*raw*
+*patient*
+*stay_id*
+
+# Validation prediction details
+*validation_predictions*
+*val_predictions*

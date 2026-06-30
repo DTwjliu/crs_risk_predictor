@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Streamlit Community Cloud app for disease-specific AKI risk prediction.
+Streamlit Community Cloud app for CRS-AKI risk prediction.
 
 Cohorts:
 - Arrhythmia
 - CAD
 - HF
+
+Manuscript-oriented interface:
+- compact title
+- single-patient and batch prediction only
+- no model information tab
+- no clinical notes tab
+- no individual contribution table
+- no input summary table
 """
 
 import json
@@ -25,15 +33,15 @@ BASE_DIR = Path(__file__).resolve().parent
 ARTIFACT_DIR = BASE_DIR / "artifacts"
 
 COHORT_LABELS = {
-    "Arrhythmia": "Arrhythmia cohort",
-    "CAD": "Coronary artery disease cohort",
-    "HF": "Heart failure cohort"
+    "Arrhythmia": "Arrhythmia",
+    "CAD": "Coronary artery disease",
+    "HF": "Heart failure"
 }
 
 COHORT_DESCRIPTIONS = {
-    "Arrhythmia": "Prediction model trained in the arrhythmia subgroup.",
-    "CAD": "Prediction model trained in the coronary artery disease subgroup.",
-    "HF": "Prediction model trained in the heart failure subgroup."
+    "Arrhythmia": "Arrhythmia subgroup model",
+    "CAD": "Coronary artery disease subgroup model",
+    "HF": "Heart failure subgroup model"
 }
 
 
@@ -48,7 +56,6 @@ def check_artifact_files(cohort_name):
         cohort_dir / f"{cohort_name}_top10_xgb_model.json",
         cohort_dir / f"{cohort_name}_feature_schema.csv",
         cohort_dir / f"{cohort_name}_metadata.json",
-        cohort_dir / f"{cohort_name}_shap_importance_top10.csv",
     ]
 
     missing_files = [str(p) for p in required_files if not p.exists()]
@@ -72,17 +79,15 @@ def load_model(cohort_name):
 
 
 @st.cache_data
-def load_schema_metadata_shap(cohort_name):
+def load_schema_metadata(cohort_name):
     check_artifact_files(cohort_name)
 
     cohort_dir = ARTIFACT_DIR / cohort_name
 
     schema_path = cohort_dir / f"{cohort_name}_feature_schema.csv"
     metadata_path = cohort_dir / f"{cohort_name}_metadata.json"
-    shap_path = cohort_dir / f"{cohort_name}_shap_importance_top10.csv"
 
     schema_df = pd.read_csv(schema_path)
-    shap_df = pd.read_csv(shap_path)
 
     with open(metadata_path, "r", encoding="utf-8") as f:
         metadata = json.load(f)
@@ -104,7 +109,7 @@ def load_schema_metadata_shap(cohort_name):
             f"Feature schema is missing columns: {missing_schema_cols}"
         )
 
-    return schema_df, metadata, shap_df
+    return schema_df, metadata
 
 
 # ============================================================
@@ -158,27 +163,7 @@ def predict_one_patient(model, input_values, feature_order, best_iteration):
 
     probability = float(model.predict(dmatrix, **predict_kwargs)[0])
 
-    contributions = model.predict(
-        dmatrix,
-        pred_contribs=True,
-        **predict_kwargs
-    )[0]
-
-    feature_contributions = contributions[:-1]
-
-    contrib_df = pd.DataFrame({
-        "original_feature": feature_order,
-        "contribution_log_odds": feature_contributions
-    })
-
-    contrib_df["abs_contribution"] = contrib_df["contribution_log_odds"].abs()
-
-    contrib_df = contrib_df.sort_values(
-        "abs_contribution",
-        ascending=False
-    ).reset_index(drop=True)
-
-    return probability, contrib_df
+    return probability
 
 
 def predict_batch(model, batch_df, feature_order, best_iteration):
@@ -236,32 +221,194 @@ def check_out_of_reference_range(input_values, schema_df):
 
         if value < p01 or value > p99:
             warnings.append(
-                f"{display}: input value {value:.4f} is outside the training reference range "
-                f"P1-P99 [{p01:.4f}, {p99:.4f}]."
+                f"{display}: {value:.4f} is outside the training reference interval "
+                f"[{p01:.4f}, {p99:.4f}]."
             )
 
     return warnings
 
 
 # ============================================================
-# 3. Page
+# 3. Page setup and manuscript-oriented CSS
 # ============================================================
 
 st.set_page_config(
-    page_title="AKI Risk Prediction",
+    page_title="CRS-AKI Risk Prediction",
     page_icon="🩺",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.title("Disease-specific AKI Risk Prediction Using XGBoost")
-
 st.markdown(
     """
-This application estimates acute kidney injury risk using disease-specific 
-XGBoost models based on the top 10 SHAP-ranked predictors.
-"""
+<style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    .block-container {
+        padding-top: 2.2rem;
+        padding-bottom: 2.0rem;
+        max-width: 1180px;
+    }
+
+    h1 {
+        font-size: 2.55rem !important;
+        font-weight: 750 !important;
+        letter-spacing: -0.02em;
+        color: #111827;
+        margin-bottom: 0.35rem !important;
+    }
+
+    h2, h3 {
+        color: #111827;
+        letter-spacing: -0.01em;
+    }
+
+    div[data-testid="stSidebar"] {
+        background-color: #F8FAFC;
+        border-right: 1px solid #E5E7EB;
+    }
+
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 1.1rem;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        font-size: 0.98rem;
+        font-weight: 600;
+        padding: 0.65rem 0.25rem;
+    }
+
+    div[data-testid="stForm"] {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 14px;
+        padding: 1.1rem 1.1rem 0.8rem 1.1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
+    }
+
+    div[data-testid="stFormSubmitButton"] button {
+        background-color: #0F766E;
+        border: 1px solid #0F766E;
+        color: white;
+        font-weight: 700;
+        border-radius: 8px;
+        padding: 0.55rem 1.25rem;
+    }
+
+    div[data-testid="stFormSubmitButton"] button:hover {
+        background-color: #115E59;
+        border: 1px solid #115E59;
+        color: white;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 720;
+        margin: 0.25rem 0 0.85rem 0;
+        color: #111827;
+    }
+
+    .model-tag {
+        display: inline-block;
+        background: #ECFDF5;
+        color: #065F46;
+        border: 1px solid #A7F3D0;
+        border-radius: 999px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 1.05rem;
+    }
+
+    .result-panel {
+        margin-top: 1.4rem;
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 16px;
+        padding: 1.15rem 1.25rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.055);
+    }
+
+    .result-title {
+        font-size: 1.25rem;
+        font-weight: 750;
+        color: #111827;
+        margin-bottom: 1.0rem;
+    }
+
+    .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+    }
+
+    .metric-card {
+        border: 1px solid #E5E7EB;
+        border-radius: 14px;
+        background: #F9FAFB;
+        padding: 1.05rem 1.05rem 0.95rem 1.05rem;
+    }
+
+    .metric-label {
+        font-size: 0.88rem;
+        color: #6B7280;
+        font-weight: 700;
+        margin-bottom: 0.45rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .metric-value {
+        font-size: 2.05rem;
+        line-height: 1.1;
+        font-weight: 780;
+        color: #111827;
+    }
+
+    .risk-high {
+        color: #B91C1C !important;
+    }
+
+    .risk-low {
+        color: #047857 !important;
+    }
+
+    .result-note-high {
+        margin-top: 1.0rem;
+        border-left: 4px solid #DC2626;
+        background: #FEF2F2;
+        color: #7F1D1D;
+        padding: 0.75rem 0.9rem;
+        border-radius: 10px;
+        font-weight: 650;
+    }
+
+    .result-note-low {
+        margin-top: 1.0rem;
+        border-left: 4px solid #059669;
+        background: #ECFDF5;
+        color: #064E3B;
+        padding: 0.75rem 0.9rem;
+        border-radius: 10px;
+        font-weight: 650;
+    }
+
+    .batch-card {
+        background: #FFFFFF;
+        border: 1px solid #E5E7EB;
+        border-radius: 14px;
+        padding: 1rem 1rem 0.8rem 1rem;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
+    }
+</style>
+""",
+    unsafe_allow_html=True
 )
+
+st.title("CRS-AKI Risk Prediction")
 
 
 # ============================================================
@@ -269,22 +416,25 @@ XGBoost models based on the top 10 SHAP-ranked predictors.
 # ============================================================
 
 with st.sidebar:
-    st.header("Disease subgroup")
+    st.header("Model settings")
 
     cohort_name = st.selectbox(
-        label="Select disease-specific prediction model",
+        label="Disease subgroup",
         options=list(COHORT_LABELS.keys()),
         format_func=lambda x: COHORT_LABELS[x]
     )
 
-    st.caption(COHORT_DESCRIPTIONS[cohort_name])
+    st.markdown(
+        f"""
+        <div class="model-tag">{COHORT_DESCRIPTIONS[cohort_name]}</div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.markdown("---")
 
-    st.header("Risk threshold")
-
     threshold_mode = st.radio(
-        label="Select threshold",
+        label="Risk threshold",
         options=[
             "High-sensitivity threshold",
             "Youden threshold",
@@ -293,18 +443,13 @@ with st.sidebar:
         index=0
     )
 
-    st.caption(
-        "For ICU early warning, a high-sensitivity threshold is usually preferred "
-        "to reduce missed high-risk cases."
-    )
-
 
 # ============================================================
 # 5. Load selected model
 # ============================================================
 
 try:
-    schema_df, metadata, shap_df = load_schema_metadata_shap(cohort_name)
+    schema_df, metadata = load_schema_metadata(cohort_name)
     model = load_model(cohort_name)
 
 except Exception as e:
@@ -314,20 +459,14 @@ except Exception as e:
 
 
 feature_order = schema_df["original_feature"].tolist()
-display_map = dict(
-    zip(schema_df["original_feature"], schema_df["display_feature"])
-)
-
 best_iteration = metadata.get("best_iteration", None)
 threshold = get_selected_threshold(metadata, threshold_mode)
 
 
-tab_predict, tab_batch, tab_model, tab_about = st.tabs(
+tab_predict, tab_batch = st.tabs(
     [
         "Single-patient prediction",
-        "Batch prediction",
-        "Model information",
-        "Clinical notes"
+        "Batch prediction"
     ]
 )
 
@@ -337,10 +476,11 @@ tab_predict, tab_batch, tab_model, tab_about = st.tabs(
 # ============================================================
 
 with tab_predict:
-    st.subheader(f"Prediction page: {COHORT_LABELS[cohort_name]}")
-
-    st.info(
-        "Enter the values of the disease-specific Top 10 SHAP predictors."
+    st.markdown(
+        f"""
+        <div class="section-title">Prediction page: {COHORT_LABELS[cohort_name]}</div>
+        """,
+        unsafe_allow_html=True
     )
 
     input_values = {}
@@ -358,13 +498,12 @@ with tab_predict:
 
             help_text = (
                 f"Original variable: {original_feature}. "
-                f"Training reference interval: P1={p01:.4f}, P99={p99:.4f}."
+                f"Reference interval: P1={p01:.4f}, P99={p99:.4f}."
             )
 
             with cols[i % 2]:
                 if input_type == "binary":
                     default_binary = int(round(default_value))
-
                     if default_binary not in [0, 1]:
                         default_binary = 0
 
@@ -390,7 +529,7 @@ with tab_predict:
 
                     input_values[original_feature] = float(value)
 
-        submitted = st.form_submit_button("Predict AKI risk")
+        submitted = st.form_submit_button("Predict CRS-AKI Risk")
 
     if submitted:
         range_warnings = check_out_of_reference_range(
@@ -399,12 +538,12 @@ with tab_predict:
         )
 
         if range_warnings:
-            with st.expander("Input range warnings", expanded=True):
+            with st.expander("Input range warnings", expanded=False):
                 for msg in range_warnings:
                     st.warning(msg)
 
         try:
-            probability, contrib_df = predict_one_patient(
+            probability = predict_one_patient(
                 model=model,
                 input_values=input_values,
                 feature_order=feature_order,
@@ -412,77 +551,37 @@ with tab_predict:
             )
 
             category = risk_category(probability, threshold)
-
-            st.markdown("---")
-            st.subheader("Prediction result")
-
-            col1, col2, col3 = st.columns(3)
-
-            with col1:
-                st.metric(
-                    label="Predicted AKI risk",
-                    value=f"{probability * 100:.2f}%"
-                )
-
-            with col2:
-                st.metric(
-                    label="Selected threshold",
-                    value=f"{threshold * 100:.2f}%"
-                )
-
-            with col3:
-                st.metric(
-                    label="Risk category",
-                    value=category
-                )
-
-            if category == "High risk":
-                st.warning(
-                    "The patient is classified as high risk according to the selected threshold."
-                )
-            else:
-                st.success(
-                    "The patient is classified as low risk according to the selected threshold."
-                )
-
-            st.subheader("Individual feature contribution")
-
-            contrib_df["display_feature"] = contrib_df["original_feature"].map(display_map)
-
-            contrib_show = contrib_df[
-                [
-                    "display_feature",
-                    "original_feature",
-                    "contribution_log_odds",
-                    "abs_contribution"
-                ]
-            ].copy()
-
-            contrib_show = contrib_show.rename(
-                columns={
-                    "display_feature": "Feature",
-                    "original_feature": "Original variable",
-                    "contribution_log_odds": "Contribution to log-odds",
-                    "abs_contribution": "Absolute contribution"
-                }
+            risk_class = "risk-high" if category == "High risk" else "risk-low"
+            note_class = "result-note-high" if category == "High risk" else "result-note-low"
+            note_text = (
+                "The predicted risk exceeds the selected decision threshold."
+                if category == "High risk"
+                else "The predicted risk is below the selected decision threshold."
             )
 
-            st.dataframe(contrib_show, use_container_width=True)
-
-            st.caption(
-                "Positive contribution increases predicted AKI risk; "
-                "negative contribution decreases predicted AKI risk."
+            st.markdown(
+                f"""
+                <div class="result-panel">
+                    <div class="result-title">Prediction result</div>
+                    <div class="metric-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Predicted CRS-AKI risk</div>
+                            <div class="metric-value">{probability * 100:.2f}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Selected threshold</div>
+                            <div class="metric-value">{threshold * 100:.2f}%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Risk category</div>
+                            <div class="metric-value {risk_class}">{category}</div>
+                        </div>
+                    </div>
+                    <div class="{note_class}">{note_text}</div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
-
-            st.subheader("Input summary")
-
-            input_show = pd.DataFrame({
-                "Feature": [display_map[f] for f in feature_order],
-                "Original variable": feature_order,
-                "Input value": [input_values[f] for f in feature_order]
-            })
-
-            st.dataframe(input_show, use_container_width=True)
 
         except Exception as e:
             st.error("Prediction failed.")
@@ -494,16 +593,21 @@ with tab_predict:
 # ============================================================
 
 with tab_batch:
-    st.subheader("Batch prediction")
+    st.markdown(
+        """
+        <div class="section-title">Batch prediction</div>
+        """,
+        unsafe_allow_html=True
+    )
 
     st.markdown(
         """
-Upload a CSV file containing the required Top 10 original feature columns.
-The uploaded file may contain additional columns, but the following columns are required:
-"""
+        <div class="batch-card">
+        Upload a CSV file containing the required original feature columns for the selected subgroup.
+        </div>
+        """,
+        unsafe_allow_html=True
     )
-
-    st.code("\n".join(feature_order), language="text")
 
     template_df = pd.DataFrame(columns=feature_order)
 
@@ -523,8 +627,10 @@ The uploaded file may contain additional columns, but the following columns are 
         try:
             batch_df = pd.read_csv(uploaded_file)
 
-            st.write("Uploaded data preview")
-            st.dataframe(batch_df.head(), use_container_width=True)
+            st.dataframe(
+                batch_df.head(),
+                use_container_width=True
+            )
 
             if st.button("Run batch prediction"):
                 probabilities = predict_batch(
@@ -535,15 +641,19 @@ The uploaded file may contain additional columns, but the following columns are 
                 )
 
                 result_df = batch_df.copy()
-                result_df["predicted_aki_risk"] = probabilities
+                result_df["predicted_crs_aki_risk"] = probabilities
                 result_df["risk_category"] = np.where(
-                    result_df["predicted_aki_risk"] >= threshold,
+                    result_df["predicted_crs_aki_risk"] >= threshold,
                     "High risk",
                     "Low risk"
                 )
 
                 st.success("Batch prediction completed.")
-                st.dataframe(result_df, use_container_width=True)
+
+                st.dataframe(
+                    result_df,
+                    use_container_width=True
+                )
 
                 st.download_button(
                     label="Download prediction results",
@@ -555,115 +665,3 @@ The uploaded file may contain additional columns, but the following columns are 
         except Exception as e:
             st.error("Batch prediction failed.")
             st.exception(e)
-
-
-# ============================================================
-# 8. Model information
-# ============================================================
-
-with tab_model:
-    st.subheader("Model information")
-
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
-        st.metric(
-            "Validation AUROC",
-            f"{float(metadata.get('val_auc', np.nan)):.4f}"
-        )
-
-    with col2:
-        st.metric(
-            "Validation AUPRC",
-            f"{float(metadata.get('val_auprc', np.nan)):.4f}"
-        )
-
-    with col3:
-        st.metric(
-            "Best iteration",
-            f"{metadata.get('best_iteration', 'NA')}"
-        )
-
-    with col4:
-        st.metric(
-            "Current threshold",
-            f"{threshold:.4f}"
-        )
-
-    st.markdown("### Cohort information")
-
-    cohort_info = {
-        "Cohort": metadata.get("cohort_name", cohort_name),
-        "Model type": metadata.get("model_type", "XGBoost"),
-        "Total rows": metadata.get("n_total_rows", "NA"),
-        "Training rows": metadata.get("n_train_rows", "NA"),
-        "Validation rows": metadata.get("n_val_rows", "NA"),
-        "Training positive rate": metadata.get("train_positive_rate", "NA"),
-        "Validation positive rate": metadata.get("val_positive_rate", "NA"),
-        "Youden threshold": metadata.get("youden_threshold", "NA"),
-        "High-sensitivity threshold": metadata.get("sensitivity80_threshold", "NA"),
-    }
-
-    cohort_info_df = pd.DataFrame(
-        list(cohort_info.items()),
-        columns=["Item", "Value"]
-    )
-
-    st.dataframe(cohort_info_df, use_container_width=True)
-
-    st.markdown("### SHAP Top 10 predictors")
-
-    shap_show = shap_df[
-        ["feature", "original_feature", "mean_abs_shap"]
-    ].copy()
-
-    shap_show = shap_show.rename(
-        columns={
-            "feature": "Feature",
-            "original_feature": "Original variable",
-            "mean_abs_shap": "Mean absolute SHAP value"
-        }
-    )
-
-    st.dataframe(shap_show, use_container_width=True)
-
-    st.markdown("### Feature schema")
-
-    schema_show = schema_df.copy()
-
-    schema_show = schema_show.rename(
-        columns={
-            "display_feature": "Display feature",
-            "original_feature": "Original variable",
-            "input_type": "Input type",
-            "default_value": "Default value",
-            "p01": "P1",
-            "p99": "P99",
-            "mean_abs_shap": "Mean absolute SHAP value"
-        }
-    )
-
-    st.dataframe(schema_show, use_container_width=True)
-
-
-# ============================================================
-# 9. Clinical notes
-# ============================================================
-
-with tab_about:
-    st.subheader("Clinical and methodological notes")
-
-    st.markdown(
-        """
-1. This application is intended for research demonstration and model interpretation.
-2. The model output is an estimated probability of AKI risk, not a standalone clinical diagnosis.
-3. Three disease-specific models are deployed:
-   - Arrhythmia cohort
-   - Coronary artery disease cohort
-   - Heart failure cohort
-4. Each prediction page uses the corresponding disease-specific Top 10 SHAP predictors.
-5. The disease setting is a model-selection step, not a mutually exclusive diagnostic classifier.
-6. The threshold should be fixed before external validation or prospective clinical evaluation.
-7. Before real clinical use, the model requires external validation, calibration assessment, usability testing, and clinical workflow evaluation.
-"""
-    )

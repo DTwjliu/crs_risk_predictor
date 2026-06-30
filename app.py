@@ -247,9 +247,11 @@ st.markdown(
     header {visibility: hidden;}
 
     .block-container {
-        padding-top: 2.2rem;
+        padding-top: 2.0rem;
         padding-bottom: 2.0rem;
-        max-width: 1180px;
+        max-width: 1460px;
+        padding-left: 2.2rem;
+        padding-right: 2.2rem;
     }
 
     h1 {
@@ -265,9 +267,41 @@ st.markdown(
         letter-spacing: -0.01em;
     }
 
+    section[data-testid="stSidebar"] {
+        min-width: 330px !important;
+        width: 330px !important;
+    }
+
+    section[data-testid="stSidebar"] > div {
+        width: 330px !important;
+    }
+
     div[data-testid="stSidebar"] {
         background-color: #F8FAFC;
         border-right: 1px solid #E5E7EB;
+    }
+
+    div[data-testid="stSidebar"] h1,
+    div[data-testid="stSidebar"] h2,
+    div[data-testid="stSidebar"] h3 {
+        font-size: 1.32rem !important;
+        font-weight: 760 !important;
+        color: #111827 !important;
+    }
+
+    div[data-testid="stSidebar"] label,
+    div[data-testid="stSidebar"] p,
+    div[data-testid="stSidebar"] span {
+        font-size: 1.03rem !important;
+        line-height: 1.45 !important;
+    }
+
+    div[data-testid="stSidebar"] [data-baseweb="select"] {
+        font-size: 1.03rem !important;
+    }
+
+    div[data-testid="stSidebar"] [role="radiogroup"] label {
+        margin-bottom: 0.38rem !important;
     }
 
     .stTabs [data-baseweb="tab-list"] {
@@ -285,8 +319,9 @@ st.markdown(
         background: #FFFFFF;
         border: 1px solid #E5E7EB;
         border-radius: 14px;
-        padding: 1.1rem 1.1rem 0.8rem 1.1rem;
+        padding: 1.15rem 1.25rem 0.9rem 1.25rem;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
+        width: 100%;
     }
 
     div[data-testid="stFormSubmitButton"] button {

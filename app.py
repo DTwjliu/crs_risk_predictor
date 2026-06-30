@@ -246,6 +246,18 @@ st.markdown(
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
+    html, body, [class*="css"] {
+        font-size: 18px !important;
+    }
+
+    .stApp {
+        font-size: 18px !important;
+    }
+
+    label, p, span, div, button, input, textarea {
+        font-size: 1.02rem;
+    }
+
     .block-container {
         padding-top: 2.0rem;
         padding-bottom: 2.0rem;
@@ -255,7 +267,7 @@ st.markdown(
     }
 
     h1 {
-        font-size: 2.55rem !important;
+        font-size: 2.85rem !important;
         font-weight: 750 !important;
         letter-spacing: -0.02em;
         color: #111827;
@@ -284,7 +296,7 @@ st.markdown(
     div[data-testid="stSidebar"] h1,
     div[data-testid="stSidebar"] h2,
     div[data-testid="stSidebar"] h3 {
-        font-size: 1.32rem !important;
+        font-size: 1.48rem !important;
         font-weight: 760 !important;
         color: #111827 !important;
     }
@@ -292,12 +304,12 @@ st.markdown(
     div[data-testid="stSidebar"] label,
     div[data-testid="stSidebar"] p,
     div[data-testid="stSidebar"] span {
-        font-size: 1.03rem !important;
+        font-size: 1.15rem !important;
         line-height: 1.45 !important;
     }
 
     div[data-testid="stSidebar"] [data-baseweb="select"] {
-        font-size: 1.03rem !important;
+        font-size: 1.15rem !important;
     }
 
     div[data-testid="stSidebar"] [role="radiogroup"] label {
@@ -310,7 +322,7 @@ st.markdown(
     }
 
     .stTabs [data-baseweb="tab"] {
-        font-size: 0.98rem;
+        font-size: 1.10rem;
         font-weight: 600;
         padding: 0.65rem 0.25rem;
     }
@@ -328,9 +340,10 @@ st.markdown(
         background-color: #0F766E;
         border: 1px solid #0F766E;
         color: white;
-        font-weight: 700;
+        font-size: 1.08rem !important;
+        font-weight: 720;
         border-radius: 8px;
-        padding: 0.55rem 1.25rem;
+        padding: 0.62rem 1.35rem;
     }
 
     div[data-testid="stFormSubmitButton"] button:hover {
@@ -340,7 +353,7 @@ st.markdown(
     }
 
     .section-title {
-        font-size: 1.25rem;
+        font-size: 1.42rem;
         font-weight: 720;
         margin: 0.25rem 0 0.85rem 0;
         color: #111827;
@@ -352,8 +365,8 @@ st.markdown(
         color: #065F46;
         border: 1px solid #A7F3D0;
         border-radius: 999px;
-        padding: 0.35rem 0.75rem;
-        font-size: 0.9rem;
+        padding: 0.42rem 0.85rem;
+        font-size: 1.02rem;
         font-weight: 700;
         margin-bottom: 1.05rem;
     }
@@ -368,7 +381,7 @@ st.markdown(
     }
 
     .result-title {
-        font-size: 1.25rem;
+        font-size: 1.42rem;
         font-weight: 750;
         color: #111827;
         margin-bottom: 1.0rem;
@@ -388,7 +401,7 @@ st.markdown(
     }
 
     .metric-label {
-        font-size: 0.88rem;
+        font-size: 0.98rem;
         color: #6B7280;
         font-weight: 700;
         margin-bottom: 0.45rem;
@@ -397,7 +410,7 @@ st.markdown(
     }
 
     .metric-value {
-        font-size: 2.05rem;
+        font-size: 2.32rem;
         line-height: 1.1;
         font-weight: 780;
         color: #111827;
@@ -438,6 +451,28 @@ st.markdown(
         padding: 1rem 1rem 0.8rem 1rem;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.045);
     }
+
+    div[data-testid="stWidgetLabel"] label,
+    div[data-testid="stWidgetLabel"] p {
+        font-size: 1.06rem !important;
+        font-weight: 650 !important;
+        color: #111827 !important;
+    }
+
+    div[data-baseweb="input"] input,
+    div[data-baseweb="select"] div {
+        font-size: 1.05rem !important;
+    }
+
+    div[data-testid="stNumberInput"] input {
+        font-size: 1.05rem !important;
+    }
+
+    .result-note-high,
+    .result-note-low {
+        font-size: 1.05rem !important;
+    }
+
 </style>
 """,
     unsafe_allow_html=True

@@ -255,7 +255,7 @@ st.markdown(
     }
 
     label, p, span, div, button, input, textarea {
-        font-size: 1.18rem;
+        font-size: 1.02rem;
     }
 
     .block-container {
@@ -296,7 +296,7 @@ st.markdown(
     div[data-testid="stSidebar"] h1,
     div[data-testid="stSidebar"] h2,
     div[data-testid="stSidebar"] h3 {
-        font-size: 1.65rem !important;
+        font-size: 1.48rem !important;
         font-weight: 760 !important;
         color: #111827 !important;
     }
@@ -304,12 +304,12 @@ st.markdown(
     div[data-testid="stSidebar"] label,
     div[data-testid="stSidebar"] p,
     div[data-testid="stSidebar"] span {
-        font-size: 1.30rem !important;
+        font-size: 1.15rem !important;
         line-height: 1.45 !important;
     }
 
     div[data-testid="stSidebar"] [data-baseweb="select"] {
-        font-size: 1.30rem !important;
+        font-size: 1.15rem !important;
     }
 
     div[data-testid="stSidebar"] [role="radiogroup"] label {
@@ -322,7 +322,7 @@ st.markdown(
     }
 
     .stTabs [data-baseweb="tab"] {
-        font-size: 1.24rem;
+        font-size: 1.10rem;
         font-weight: 600;
         padding: 0.65rem 0.25rem;
     }
@@ -366,7 +366,7 @@ st.markdown(
         border: 1px solid #A7F3D0;
         border-radius: 999px;
         padding: 0.42rem 0.85rem;
-        font-size: 1.18rem;
+        font-size: 1.02rem;
         font-weight: 700;
         margin-bottom: 1.05rem;
     }
@@ -454,23 +454,23 @@ st.markdown(
 
     div[data-testid="stWidgetLabel"] label,
     div[data-testid="stWidgetLabel"] p {
-        font-size: 1.22rem !important;
+        font-size: 1.06rem !important;
         font-weight: 650 !important;
         color: #111827 !important;
     }
 
     div[data-baseweb="input"] input,
     div[data-baseweb="select"] div {
-        font-size: 1.22rem !important;
+        font-size: 1.05rem !important;
     }
 
     div[data-testid="stNumberInput"] input {
-        font-size: 1.22rem !important;
+        font-size: 1.05rem !important;
     }
 
     .result-note-high,
     .result-note-low {
-        font-size: 1.22rem !important;
+        font-size: 1.05rem !important;
     }
 
 </style>

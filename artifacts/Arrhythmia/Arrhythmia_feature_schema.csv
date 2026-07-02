@@ -1,0 +1,11 @@
+original_feature,display_feature,input_type,default_value,p01,p99,min_value,max_value,mean_abs_shap
+urine_output_mean,Mean Urine Output,continuous,136.4239605,14.191156141499999,701.636213130001,0.494356101,442000.0,0.7139589
+weight,Weight,continuous,85.2,47.2,153.0,1.0,1027.0,0.35989177
+has_diuretics,Diuretics,binary,0.0,0.0,1.0,0.0,1.0,0.23852496
+creatinine_last_mean_diff,Delta Creatinine,continuous,0.0,0.0,0.45,0.0,1.6,0.11459088
+bun_last_mean_diff,Delta BUN,continuous,0.0,0.0,10.66666667,0.0,26.88888889,0.107299715
+has_ventilation,Ventilation,binary,1.0,0.0,1.0,0.0,1.0,0.093070015
+potassium_last_mean_diff,Delta Potassium,continuous,0.0,0.0,0.98,0.0,5.435714286,0.071664356
+age,Age,continuous,72.93669464,36.64876887,92.59427144,19.28366375,103.7384625,0.06889199
+sofa_score,SOFA,continuous,5.0,1.0,16.0,0.0,22.0,0.068127856
+bun_mean,Mean BUN,continuous,19.69163761,7.0,105.0,2.0,177.0,0.05996917

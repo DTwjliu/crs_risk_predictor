@@ -1,0 +1,11 @@
+feature,original_feature,mean_abs_shap
+Mean Urine Output,urine_output_mean,0.6565341
+Weight,weight,0.30990532
+Diuretics,has_diuretics,0.24758793
+Delta Creatinine,creatinine_last_mean_diff,0.103433564
+Delta BUN,bun_last_mean_diff,0.07585083
+Mean BUN,bun_mean,0.06649806
+SOFA,sofa_score,0.06232084
+Delta Potassium,potassium_last_mean_diff,0.058758922
+Age,age,0.057187837
+Max PaO2,pao2_max,0.05597167

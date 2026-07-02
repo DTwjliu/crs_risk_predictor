@@ -1,0 +1,11 @@
+feature,original_feature,mean_abs_shap
+Mean Urine Output,urine_output_mean,0.21707359
+Weight,weight,0.10818771
+Diuretics,has_diuretics,0.06543737
+SOFA,sofa_score,0.04778303
+Delta BUN,bun_last_mean_diff,0.034073804
+Max pH,ph_max,0.032669514
+Delta Creatinine,creatinine_last_mean_diff,0.028012164
+Max FiO2,fio2_max,0.022337843
+APS III,apsiii,0.01772415
+Mean pH,ph_mean,0.017293196

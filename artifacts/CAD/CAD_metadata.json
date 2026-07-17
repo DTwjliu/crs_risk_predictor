@@ -1,0 +1,51 @@
+{
+    "cohort_name": "CAD",
+    "model_type": "XGBoost Top 10 SHAP feature model",
+    "top10_features": [
+        "urine_output_mean",
+        "weight",
+        "has_diuretics",
+        "sofa_score",
+        "bun_last_mean_diff",
+        "creatinine_last_mean_diff",
+        "ph_max",
+        "has_ventilation",
+        "fio2_max",
+        "ph_mean"
+    ],
+    "best_iteration": 26,
+    "val_auc": 0.7881229398706618,
+    "val_auprc": 0.3757067164959983,
+    "youden_threshold": 0.502867579460144,
+    "sensitivity80_threshold": 0.4086170196533203,
+    "default_threshold_name": "sensitivity80_threshold",
+    "youden_metrics": {
+        "threshold": 0.502867579460144,
+        "accuracy": 0.730981308411215,
+        "sensitivity": 0.7254835425856804,
+        "specificity": 0.7318593182680323,
+        "precision": 0.30172170476996896,
+        "npv": 0.9434819058264636,
+        "tp": 2138,
+        "tn": 13505,
+        "fp": 4948,
+        "fn": 809
+    },
+    "sensitivity80_metrics": {
+        "threshold": 0.4086170196533203,
+        "accuracy": 0.1377102803738318,
+        "sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.1377102803738318,
+        "npv": NaN,
+        "tp": 2947,
+        "tn": 0,
+        "fp": 18453,
+        "fn": 0
+    },
+    "n_total_rows": 104292,
+    "n_train_rows": 82892,
+    "n_val_rows": 21400,
+    "train_positive_rate": 0.15155865463494667,
+    "val_positive_rate": 0.1377102803738318
+}

@@ -1,0 +1,51 @@
+{
+    "cohort_name": "HF",
+    "model_type": "XGBoost Top 10 SHAP feature model",
+    "top10_features": [
+        "urine_output_mean",
+        "weight",
+        "has_diuretics",
+        "creatinine_last_mean_diff",
+        "has_ventilation",
+        "potassium_last_mean_diff",
+        "bun_mean",
+        "sofa_score",
+        "bun_last_mean_diff",
+        "pao2_max"
+    ],
+    "best_iteration": 176,
+    "val_auc": 0.7879716200127205,
+    "val_auprc": 0.393039583391516,
+    "youden_threshold": 0.5166398286819458,
+    "sensitivity80_threshold": 0.13916102051734924,
+    "default_threshold_name": "sensitivity80_threshold",
+    "youden_metrics": {
+        "threshold": 0.5166398286819458,
+        "accuracy": 0.7291206363234645,
+        "sensitivity": 0.7047394225531142,
+        "specificity": 0.7334940229959936,
+        "precision": 0.321727596783553,
+        "npv": 0.9326568647753158,
+        "tp": 3881,
+        "tn": 22519,
+        "fp": 8182,
+        "fn": 1626
+    },
+    "sensitivity80_metrics": {
+        "threshold": 0.13916102051734924,
+        "accuracy": 0.15209346000883783,
+        "sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.15209346000883783,
+        "npv": NaN,
+        "tp": 5507,
+        "tn": 0,
+        "fp": 30701,
+        "fn": 0
+    },
+    "n_total_rows": 185486,
+    "n_train_rows": 149278,
+    "n_val_rows": 36208,
+    "train_positive_rate": 0.14201690805075096,
+    "val_positive_rate": 0.15209346000883783
+}

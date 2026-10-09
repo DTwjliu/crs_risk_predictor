@@ -1,0 +1,11 @@
+feature,original_feature,mean_abs_shap
+Mean Urine Output,urine_output_mean,1.1016047
+Weight,weight,0.43397722
+Diuretics,has_diuretics,0.13860478
+Delta BUN,bun_last_mean_diff,0.13706097
+Delta Creatinine,creatinine_last_mean_diff,0.12451351
+Ventilation,has_ventilation,0.0968005
+Delta Potassium,potassium_last_mean_diff,0.07179213
+Mean SpO2,spo2_mean,0.06627693
+Max Temperature,temperature_c_revised_max,0.06521689
+Max Respiratory Rate,respiratory_rate_max,0.06302377

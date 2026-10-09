@@ -1,0 +1,51 @@
+{
+    "cohort_name": "Arrhythmia",
+    "model_type": "XGBoost Top 10 SHAP feature model",
+    "top10_features": [
+        "urine_output_mean",
+        "weight",
+        "has_diuretics",
+        "bun_last_mean_diff",
+        "creatinine_last_mean_diff",
+        "has_ventilation",
+        "potassium_last_mean_diff",
+        "spo2_mean",
+        "temperature_c_revised_max",
+        "respiratory_rate_max"
+    ],
+    "best_iteration": 376,
+    "val_auc": 0.8140701603282854,
+    "val_auprc": 0.47225376303926125,
+    "youden_threshold": 0.5455414652824402,
+    "sensitivity80_threshold": 0.03487761318683624,
+    "default_threshold_name": "sensitivity80_threshold",
+    "youden_metrics": {
+        "threshold": 0.5455414652824402,
+        "accuracy": 0.7551480753838318,
+        "sensitivity": 0.7232019628891274,
+        "specificity": 0.7611501671084476,
+        "precision": 0.36260187605720434,
+        "npv": 0.9360450696240655,
+        "tp": 4716,
+        "tn": 26418,
+        "fp": 8290,
+        "fn": 1805
+    },
+    "sensitivity80_metrics": {
+        "threshold": 0.03487761318683624,
+        "accuracy": 0.15816536903635792,
+        "sensitivity": 1.0,
+        "specificity": 0.0,
+        "precision": 0.15816536903635792,
+        "npv": NaN,
+        "tp": 6521,
+        "tn": 0,
+        "fp": 34708,
+        "fn": 0
+    },
+    "n_total_rows": 206410,
+    "n_train_rows": 165181,
+    "n_val_rows": 41229,
+    "train_positive_rate": 0.15742125304968488,
+    "val_positive_rate": 0.15816536903635792
+}
